@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "mdx-deck": "^4.1.1"
+  },
+  "scripts": {
+    "start": "mdx-deck lesson_1_hello_world.mdx"
+  }
+}
