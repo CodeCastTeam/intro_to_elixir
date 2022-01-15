@@ -12,6 +12,25 @@ defmodule StarWars do
   # with alias we can simply use: Strings
   alias Helpers.Strings
 
+  @spec fetch_person_info_by_name(any) :: any
+  def fetch_person_info_by_name(name) do
+    case get_all_people() do
+      {:ok, results} -> Enum.find(results, fn person -> person["name"] == name end)
+      {:error, message} -> IO.puts "Error happened: #{message}"
+    end
+  end
+
+  def get_all_people() do
+    HTTPoison.start
+
+    "https://swapi.dev/api/people"
+    |> HTTPoison.get!
+    |> handle_api_response()
+    |> case do
+      {:ok, %{"results" => results}} -> {:ok, results}
+      {:error, _} -> {:error, "Couldn't fetch all people"}
+    end
+  end
 
   def fetch_person_info_by_id(id) do
     HTTPoison.start
@@ -19,20 +38,23 @@ defmodule StarWars do
     "https://swapi.dev/api/people/#{id}"
     |> HTTPoison.get!
     |> handle_api_response()
+    |> case do
+      {:ok, data} -> IO.inspect data
+      {:error, error_message} -> IO.puts "Error occurred: #{error_message}"
+    end
   end
 
+  @spec handle_api_response(any) :: any
   def handle_api_response(%HTTPoison.Response{body: body, status_code: 200}) do
-    IO.puts "SUCCESS"
-    IO.puts body
+    {:ok, Poison.decode!(body)}
   end
 
-  def handle_api_response(%HTTPoison.Response{body: body, status_code: 404}) do
-    IO.puts "RESOURCE NOT FOUND"
-    IO.puts body
+  def handle_api_response(%HTTPoison.Response{status_code: 404}) do
+    {:error, "Resource Not Found"}
   end
 
   def handle_api_response(_) do
-    IO.puts "UKNOWN ERROR"
+    {:error, "UKNOWN ERROR"}
   end
 
 
