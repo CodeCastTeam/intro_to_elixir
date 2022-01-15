@@ -6,7 +6,7 @@ defmodule StarWarsTest do
     assert StarWars.hello() == :world
   end
 
-  test "greets by saying hello with titleized namne" do
+  test "It greets by returning Hello with titleized string that is given" do
     assert StarWars.greeting("john smith") == "Hello John Smith"
   end
 end

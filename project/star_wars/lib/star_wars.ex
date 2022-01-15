@@ -25,14 +25,14 @@ defmodule StarWars do
     :world
   end
 
-
   @doc """
-   This method greets the user by returns hello with titleizes name that should be
-   passed as a parameter.
+  This function greets by returning `Hello` with titlezing the input.
 
-   ## Examples
-     iex> StarWars.greeting("jen millar")
-     "Hello Jen Millar"
+  ## Example
+
+    iex> StarWars.greeting("jen millar")
+    "Hello Jen Millar"
+
   """
   def greeting(name) do
     "Hello #{Strings.titleize(name)}"

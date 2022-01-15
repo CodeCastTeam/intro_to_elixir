@@ -4,8 +4,7 @@ defmodule Helpers.Strings do
   """
 
   @doc """
-  This function takes in a single parameter as a string and it returns the string
-  with each word capitalized.
+  This function titleizes strings by capitalizes each word.
 
   ## Examples
     iex> Strings.titleize("hello world")
