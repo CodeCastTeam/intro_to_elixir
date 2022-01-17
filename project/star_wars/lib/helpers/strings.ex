@@ -13,7 +13,7 @@ defmodule Helpers.Strings do
   def titleize(string) do
     string
     |> String.split()
-    |> Enum.map(&(String.capitalize(&1)))
+    |> Enum.map(&String.capitalize(&1))
     |> Enum.join(" ")
   end
 end

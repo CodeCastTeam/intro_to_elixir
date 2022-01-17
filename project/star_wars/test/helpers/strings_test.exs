@@ -7,5 +7,4 @@ defmodule Helpers.StringsTest do
   test "titleizes a string" do
     assert Strings.titleize("hello world") == "Hello World"
   end
-
 end

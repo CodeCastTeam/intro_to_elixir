@@ -12,19 +12,43 @@ defmodule StarWars do
   # with alias we can simply use: Strings
   alias Helpers.Strings
 
-  @spec fetch_person_info_by_name(any) :: any
+  @doc """
+  This function takes two names and queries the SWAPI and tells you which character is taller than the other
+
+  """
+  def who_is_taller(name_1, name_2) do
+    with {:ok, person_1_info} <- fetch_person_info_by_name(name_1),
+         {:ok, person_2_info} <- fetch_person_info_by_name(name_2) do
+        # this will only execute when everything in the `with` clauses matches correctly
+        if person_1_is_taller?(person_1_info, person_2_info) do
+          "#{name_1} is taller than #{name_2}"
+        else
+          "#{name_2} is taller than #{name_1}"
+        end
+    else
+      _ -> "Names are misspelled or some other error happened connecting to the API"
+    end
+  end
+
+  def person_1_is_taller?(%{"height" => person_1_height}, %{"height" => person_2_height}) do
+    String.to_integer(person_1_height) > String.to_integer(person_2_height)
+  end
+
   def fetch_person_info_by_name(name) do
     case get_all_people() do
-      {:ok, results} -> Enum.find(results, fn person -> person["name"] == name end)
-      {:error, message} -> IO.puts "Error happened: #{message}"
+      {:ok, results} ->
+        {:ok, Enum.find(results, fn person -> String.downcase(person["name"]) == String.downcase(name) end)}
+
+      {:error, message} ->
+        {:error, "Error happened: #{message}"}
     end
   end
 
   def get_all_people() do
-    HTTPoison.start
+    HTTPoison.start()
 
     "https://swapi.dev/api/people"
-    |> HTTPoison.get!
+    |> HTTPoison.get!()
     |> handle_api_response()
     |> case do
       {:ok, %{"results" => results}} -> {:ok, results}
@@ -33,18 +57,17 @@ defmodule StarWars do
   end
 
   def fetch_person_info_by_id(id) do
-    HTTPoison.start
+    HTTPoison.start()
 
     "https://swapi.dev/api/people/#{id}"
-    |> HTTPoison.get!
+    |> HTTPoison.get!()
     |> handle_api_response()
     |> case do
-      {:ok, data} -> IO.inspect data
-      {:error, error_message} -> IO.puts "Error occurred: #{error_message}"
+      {:ok, data} -> IO.inspect(data)
+      {:error, error_message} -> IO.puts("Error occurred: #{error_message}")
     end
   end
 
-  @spec handle_api_response(any) :: any
   def handle_api_response(%HTTPoison.Response{body: body, status_code: 200}) do
     {:ok, Poison.decode!(body)}
   end
@@ -56,7 +79,6 @@ defmodule StarWars do
   def handle_api_response(_) do
     {:error, "UKNOWN ERROR"}
   end
-
 
   @doc """
   This function greets by returning `Hello` with titlezing the input.
@@ -70,5 +92,4 @@ defmodule StarWars do
   def greeting(name) do
     "Hello #{Strings.titleize(name)}"
   end
-
 end
