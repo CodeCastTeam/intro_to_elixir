@@ -2,4 +2,5 @@
 slides/node_modules
 project/.elixir_ls
 project/star_wars/_build
+project/star_wars/deps
 project/star_wars/.elixir_ls
